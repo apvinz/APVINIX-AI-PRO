@@ -1,4 +1,4 @@
-import {useEffect,useMemo,useRef,useState} from 'react';
+import { Activity,} from 'lucide-react';import {useEffect,useMemo,useRef,useState} from 'react';
 import {Activity,ArrowDownToLine,ArrowRight,AudioLines,BookOpen,Check,CheckCircle2,ChevronDown,Cloud,CloudOff,Code2,Disc3,Download,FileAudio,FileCode2,FileMusic,FileUp,Gauge,Headphones,Info,Layers3,Menu,Mic2,Music2,Pause,Play,Plus,RefreshCw,Settings2,ShieldCheck,Sparkles,Trash2,UploadCloud,Volume2,Activity,Wifi,WifiOff,X,Zap} from 'lucide-react';
 import {decodeAudio,demoAudio,durationLabel,midiName} from './lib/audio';
 import {analyzeLocal} from './lib/worker-client';
