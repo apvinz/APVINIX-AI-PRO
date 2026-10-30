@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#0c1025"/>
+<meta name="description" content="APVINIX AI: ubah audio menjadi partitur MusicXML dan MIDI langsung di browser. Kompatibel dengan MuseScore, siap deploy di Netlify."/>
+<title>APVINIX AI — Audio ke Partitur</title>
+<link rel="stylesheet" href="./style.css"/>
+</head>
+<body>
+<div class="background-glow" aria-hidden="true"></div>
+<header class="topbar container">
+  <a class="brand" href="#atas" aria-label="APVINIX AI beranda"><span class="brand-icon">♫</span><span>APVINIX <span class="brand-emphasis">AI</span><small>STUDIO</small></span></a>
+  <div class="header-right"><span class="header-dot"></span><span>Browser + Python AI opsional</span><span class="header-separator"></span><a href="#cara">Cara pakai ↗</a></div>
+</header>
+<main id="atas">
+  <section class="hero container">
+    <div class="eyebrow"><span class="eyebrow-dot"></span> AUDIO TO MUSICXML · MUSIC INTELLIGENCE STUDIO</div>
+    <h1>Ubah suara menjadi<br/><em>partitur musik.</em></h1>
+    <p>Unggah rekaman, kenali nadanya, lalu unduh partitur yang dapat kamu buka dan edit di <strong>MuseScore</strong>. Gunakan mode browser tanpa server, atau sambungkan backend Python untuk analisis Studio AI.</p>
+    <div class="feature-chips"><span>♪ MusicXML</span><span>▤ Pratinjau not balok</span><span>◉ MIDI</span><span>✧ AI + mode cadangan</span></div>
+  </section>
+  <section class="workspace container">
+    <div class="panel editor-panel">
+      <div class="panel-heading"><div><span class="small-number">01 / INPUT</span><h2>Mulai transkripsi</h2></div><span class="panel-tag">ONLINE / LOCAL</span></div>
+      <div class="upload-zone" id="dropzone">
+        <div class="upload-orb" aria-hidden="true"><svg viewBox="0 0 24 24" width="31" height="31" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V3m-5 5 5-5 5 5"/><path d="M4 16v4h16v-4"/></svg></div>
+        <strong>Tarik & lepas lagu ke sini</strong>
+        <span>atau pilih file dari perangkatmu</span>
+        <label class="file-btn" for="audio-file">Pilih audio <span aria-hidden="true">↗</span></label>
+        <input type="file" id="audio-file" accept="audio/*,.mp3,.wav,.flac,.ogg,.m4a,.aac,.opus,.webm"/>
+        <small>MP3, WAV, FLAC, OGG, M4A* · Maks. 60 MB</small>
+      </div>
+      <div class="selected-file" aria-live="polite"><span class="selected-icon">♫</span><span id="file-name">Belum ada audio dipilih</span><button id="try-sample" type="button">Coba contoh ↗</button></div>
+      <audio id="audio-player" controls hidden></audio>
+      <div class="control-separator"></div>
+      <div class="field"><label for="title">JUDUL PARTITUR</label><input id="title" type="text" placeholder="Contoh: Melodi Piano" maxlength="100"/></div>
+      <div class="field"><label for="mode">MESIN TRANSKRIPSI</label>
+        <select id="mode"><option value="ai">Basic Pitch AI (browser) · tidak fallback diam-diam</option><option value="auto">Eksperimental: AI lalu deteksi melodi lokal</option><option value="local">Deteksi melodi lokal · tanpa AI</option><option value="studio">Studio AI · Basic Pitch di server Python</option><option value="studio-stems">Studio AI 4 stem · Demucs + Basic Pitch</option><option value="studio-piano">Piano AI · PyTorch model khusus piano</option></select>
+        <small>Mode AI browser memerlukan internet. Studio AI memerlukan backend Python terpisah. Mode lokal menargetkan satu melodi dominan.</small>
+      </div>
+      <div class="field" id="server-settings" hidden><label for="api-url">URL BACKEND PYTHON / FASTAPI (HTTPS)</label><input id="api-url" type="url" placeholder="https://apvinix-api.example.com" autocomplete="url"/><small>Deploy folder backend/ ke host Docker terpisah, lalu isi URL server di sini. URL tersimpan di browser ini.</small><button type="button" id="check-api" class="api-check">Uji koneksi server</button><span id="server-status" class="server-status">Belum terhubung.</span></div>
+      <div class="field-grid">
+        <div class="field"><label for="bpm">TEMPO (BPM)</label><input id="bpm" type="number" value="120" min="40" max="240"/></div>
+        <div class="field"><label for="meter">TANDA BIRAMA</label><select id="meter"><option>4/4</option><option>3/4</option><option>2/4</option><option>6/8</option></select></div>
+      </div>
+      <div class="field"><label for="grid">KETELITIAN RITME</label><select id="grid"><option value="4">1/16 · lebih detail</option><option value="2">1/8 · lebih sederhana</option></select></div>
+      <details class="advanced"><summary>Pengaturan sensitivitas AI <span>⌄</span></summary><div class="field-grid"><div class="field"><label for="frame-threshold">AMBANG NADA</label><input id="frame-threshold" type="number" value="0.30" min="0.1" max="0.9" step="0.05"/></div><div class="field"><label for="onset-threshold">AMBANG AWAL NOT</label><input id="onset-threshold" type="number" value="0.30" min="0.1" max="0.9" step="0.05"/></div></div></details>
+      <button class="convert-btn" type="button" id="convert" disabled><span>✦ Ubah jadi partitur</span><span aria-hidden="true">↗</span></button>
+      <div class="progress-area" id="progress-wrap" hidden role="progressbar" aria-label="Proses konversi" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress" class="progress"></div></div>
+      <p class="status" id="status" role="status" aria-live="polite">Pilih file audio atau coba contoh untuk memulai.</p>
+    </div>
+    <div class="right-stack">
+      <div class="panel result-panel" id="result" hidden>
+        <div class="panel-heading"><div><span class="small-number">02 / OUTPUT</span><h2>Partitur siap</h2></div><span class="success-pill">✓ Berhasil</span></div>
+        <div class="result-stats"><div><span>NOT</span><strong id="note-count">–</strong></div><div><span>DURASI</span><strong id="duration-text">–</strong></div><div><span>TEMPO</span><strong id="stats-bpm">–</strong></div></div>
+        <div class="engine-label"><span>Mesin pengenal:</span><strong id="engine-used">–</strong></div>
+        <div id="quality-report" class="quality-panel" hidden role="status" aria-live="polite"></div><div class="score-wrap" id="score"></div>
+        <div class="button-stack"><button id="save-xml" class="download-primary">↓ Unduh MusicXML <small>Untuk MuseScore</small></button><div class="two-buttons"><button id="save-midi">↓ Unduh MIDI</button><button id="save-both">↓ Unduh keduanya</button></div><div class="two-buttons" id="studio-downloads" hidden><button id="save-mxl">↓ Unduh MXL</button><button id="save-zip">↓ Download ZIP + laporan kualitas</button></div></div>
+        <p class="result-note">Transkripsi otomatis mungkin memiliki nada atau ritme keliru. Buka MusicXML di MuseScore untuk melakukan koreksi.</p>
+      </div>
+      <div class="side-card"><div class="side-card-head"><span class="side-icon">♪</span><span>APA YANG AKAN KAMU DAPAT?</span></div>
+        <div class="side-item"><div class="side-item-icon">𝄞</div><div><strong>File partitur MusicXML</strong><p>Not balok yang dapat diedit di MuseScore.</p></div></div>
+        <div class="side-item"><div class="side-item-icon">◉</div><div><strong>File MIDI</strong><p>Hasil pengenalan nada untuk diputar atau diolah kembali.</p></div></div>
+        <div class="side-item"><div class="side-item-icon">⌘</div><div><strong>Pemrosesan privat</strong><p>Mode lokal menjaga audio di browser; mode Studio mengunggahnya ke backend yang kamu konfigurasi.</p></div></div>
+      </div>
+      <div class="info-card"><span class="info-stars">✧</span><div><strong>Ingin hasil lebih tepat?</strong><p>Gunakan rekaman piano/gitar/melodi tunggal yang bersih. Lagu dengan banyak instrumen dapat menghasilkan not tambahan atau hilang.</p></div></div>
+    </div>
+  </section>
+  <section class="how container" id="cara"><div class="how-heading"><div><span class="small-number">HOW IT WORKS</span><h2>Dari rekaman ke not balok</h2></div><p>Tiga langkah sederhana, dengan browser, ditambah opsi server AI.</p></div><div class="steps"><div><span>01</span><strong>Unggah audio</strong><p>Pilih lagu atau rekaman musik.</p></div><div><span>02</span><strong>Kenali nada</strong><p>AI menganalisis not; metode lokal siap menjadi cadangan.</p></div><div><span>03</span><strong>Buka di MuseScore</strong><p>Unduh MusicXML lalu buka di aplikasi MuseScore.</p></div></div></section>
+</main>
+<footer class="container"><span>♫ APVINIX <span class="brand-emphasis">AI</span> studio</span><span>Dibuat untuk eksplorasi musik · Bukan jaminan transkripsi identik</span></footer>
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>

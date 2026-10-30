@@ -1,0 +1,4 @@
+-r requirements.txt
+# Requires a compatible torch build and downloads pretrained model on first use.
+# Reference: https://github.com/qiuqiangkong/piano_transcription_inference
+piano_transcription_inference==0.0.6
