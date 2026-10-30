@@ -156,7 +156,7 @@ function App(){
   const recording=result?.source==='studio' ? 'Studio AI' : 'Mode lokal';
   return <div className="app-shell">
     <aside className={`sidebar ${mobileMenu?'is-open':''}`}>
-      <div className="brand"><div className="brand-mark"><Waveform size={26}/></div><div><div className="brand-title">APVINIX <b>AI</b></div><div className="brand-subtitle">MUSIC INTELLIGENCE</div></div></div>
+      <div className="brand"><div className="brand-mark"><AudioWaveform size={26}/></div><div><div className="brand-title">APVINIX <b>AI</b></div><div className="brand-subtitle">MUSIC INTELLIGENCE</div></div></div>
       <div className="side-section-label">WORKSPACE</div>
       <nav className="side-nav">{sidemenu.map(({id,name,icon:Icon})=><button key={id} className={`nav-link ${page===id?'active':''}`} onClick={()=>{setPage(id);setMobileMenu(false)}}><Icon size={18}/>{name}{id==='studio'&&<span className="nav-dot"/>}</button>)}</nav>
       <div className="side-section-label library-label">PROJECT STATUS</div>
