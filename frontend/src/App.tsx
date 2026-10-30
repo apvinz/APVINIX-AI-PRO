@@ -1,5 +1,5 @@
 import {useEffect,useMemo,useRef,useState} from 'react';
-import {Activity,ArrowDownToLine,ArrowRight,AudioLines,BookOpen,Check,CheckCircle2,ChevronDown,Cloud,CloudOff,Code2,Disc3,Download,FileAudio,FileCode2,FileMusic,FileUp,Gauge,Headphones,Info,Layers3,Menu,Mic2,Music2,Pause,Play,Plus,RefreshCw,Settings2,ShieldCheck,Sparkles,Trash2,UploadCloud,Volume2,Waveform,Wifi,WifiOff,X,Zap} from 'lucide-react';
+import {Activity,ArrowDownToLine,ArrowRight,AudioLines,BookOpen,Check,CheckCircle2,ChevronDown,Cloud,CloudOff,Code2,Disc3,Download,FileAudio,FileCode2,FileMusic,FileUp,Gauge,Headphones,Info,Layers3,Menu,Mic2,Music2,Pause,Play,Plus,RefreshCw,Settings2,ShieldCheck,Sparkles,Trash2,UploadCloud,Volume2,Activity,Wifi,WifiOff,X,Zap} from 'lucide-react';
 import {decodeAudio,demoAudio,durationLabel,midiName} from './lib/audio';
 import {analyzeLocal} from './lib/worker-client';
 import {downloadFile,midiBytes,musicXML,previewSVG,quantize} from './lib/export';
@@ -156,7 +156,7 @@ function App(){
   const recording=result?.source==='studio' ? 'Studio AI' : 'Mode lokal';
   return <div className="app-shell">
     <aside className={`sidebar ${mobileMenu?'is-open':''}`}>
-      <div className="brand"><div className="brand-mark"><AudioWaveform size={26}/></div><div><div className="brand-title">APVINIX <b>AI</b></div><div className="brand-subtitle">MUSIC INTELLIGENCE</div></div></div>
+      <div className="brand"><div className="brand-mark"><Activity size={26}/></div><div><div className="brand-title">APVINIX <b>AI</b></div><div className="brand-subtitle">MUSIC INTELLIGENCE</div></div></div>
       <div className="side-section-label">WORKSPACE</div>
       <nav className="side-nav">{sidemenu.map(({id,name,icon:Icon})=><button key={id} className={`nav-link ${page===id?'active':''}`} onClick={()=>{setPage(id);setMobileMenu(false)}}><Icon size={18}/>{name}{id==='studio'&&<span className="nav-dot"/>}</button>)}</nav>
       <div className="side-section-label library-label">PROJECT STATUS</div>
