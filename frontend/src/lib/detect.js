@@ -20,6 +20,10 @@ function estimatePitch(signal,offset,size=1024){
  const midi=Math.round(p);
  return midi>=36&&midi<=96?midi:null;
 }
+/**
+ * @param {Float32Array} samples22050
+ * @param {{onProgress?: (progress: number) => void, limitSeconds?: number}} [options]
+ */
 export function detectMelody(samples22050,{onProgress=()=>{},limitSeconds=120}={}){
  const length=Math.min(samples22050.length,Math.round(limitSeconds*22050));
  if(length<22050/8)throw new Error('Audio terlalu pendek untuk dideteksi.');
